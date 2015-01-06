@@ -22,30 +22,54 @@ exports.requestHandler = function(request, response) {
 
   // Do some basic logging.
   //
+  var obj ={
+    a: "hello world",
+    results: [],
+  };
 
-  request.on('data', function(){
+  var data;
 
-  })
+  request.on('data', function(chunks){
+        data += chunks;
+    });
   request.on('end', function(){
-    //parse
-  })
+    obj.results.push(data);
 
+    // console.log(typeof data);
+    // console.log(data);
+    //parse
+  });
 
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
 
-  // The outgoing status.
   var statusCode = 200;
-
+  // The outgoing status.
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
+  // request.on('error', function(){
+  //   response.writeHead(404, headers);
+  // })
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = "text/plain";
+
+
+  if(request.method === "POST"){
+    if(request.url==="/classes/messages"){
+      statusCode = 201;
+    }else{
+      statusCode =404;
+    }
+  }
+  else if(request.method==="GET"){
+
+  }
+  // else if(request.method==="PUT"){}
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
@@ -58,7 +82,8 @@ exports.requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(JSON.stringify("hello world"));
+
+  response.end(JSON.stringify(obj));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
