@@ -27,16 +27,13 @@ exports.requestHandler = function(request, response) {
     results: [],
   };
 
-  var data;
+  var data = "";
 
   request.on('data', function(chunks){
         data += chunks;
-    });
+  });
   request.on('end', function(){
     obj.results.push(data);
-
-    // console.log(typeof data);
-    // console.log(data);
     //parse
   });
 
@@ -62,11 +59,18 @@ exports.requestHandler = function(request, response) {
   if(request.method === "POST"){
     if(request.url==="/classes/messages"){
       statusCode = 201;
-    }else{
-      statusCode =404;
+    }
+    if(request.url === "/classes/room1"){
+      statusCode = 201;
     }
   }
   else if(request.method==="GET"){
+    if(request.url!=="/classes/messages"){
+      statusCode = 404;
+    }
+    if(request.url === "/classes/room1"){
+      statusCode = 200;
+    }
 
   }
   // else if(request.method==="PUT"){}
