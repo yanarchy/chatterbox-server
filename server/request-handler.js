@@ -11,6 +11,11 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var obj ={
+  results: []
+};
+var data = "";
+
 exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   // They include information about both the incoming request, such as
@@ -22,25 +27,16 @@ exports.requestHandler = function(request, response) {
 
   // Do some basic logging.
   //
-  var obj ={
-    a: "hello world",
-    results: [],
-  };
 
-  var data = "";
 
-  request.on('data', function(chunks){
-        data += chunks;
-  });
-  request.on('end', function(){
-    obj.results.push(data);
-    //parse
-  });
+
+  // request.on('end', function(){
+  //   //parse
+  // });
 
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
-  console.log("Serving request type " + request.method + " for url " + request.url);
 
   var statusCode = 200;
   // The outgoing status.
@@ -57,6 +53,11 @@ exports.requestHandler = function(request, response) {
 
 
   if(request.method === "POST"){
+    request.on('data', function(chunks){
+      console.log('hello, i got me chunks');
+      obj.results.push(JSON.parse(chunks));
+      console.log(obj.results);
+    });
     if(request.url==="/classes/messages"){
       statusCode = 201;
     }
@@ -65,15 +66,17 @@ exports.requestHandler = function(request, response) {
     }
   }
   else if(request.method==="GET"){
-    if(request.url!=="/classes/messages"){
+    if(request.url==="/arglebargle"){ //change later
       statusCode = 404;
     }
     if(request.url === "/classes/room1"){
       statusCode = 200;
+
     }
 
   }
   // else if(request.method==="PUT"){}
+  console.log("Serving request type " + request.method + " for url " + request.url);
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
